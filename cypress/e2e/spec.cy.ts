@@ -1,5 +1,3 @@
-import { RobotOrientation } from "~/types";
-
 describe("E2E", () => {
   it("should run tests", () => {
     cy.visit("http://localhost:3000");
@@ -7,7 +5,7 @@ describe("E2E", () => {
 
     cy.get('input[name="x"]').clear().type("1");
     cy.get('input[name="y"]').clear().type("1");
-    cy.get('select[name="orientation"]').select(RobotOrientation.E);
+    cy.get('select[name="orientation"]').select("E");
     cy.get('input[name="command"]').clear().type("RFRFRFRF");
     cy.get('button[type="submit"]').click();
 
@@ -19,7 +17,7 @@ describe("E2E", () => {
 
     cy.get('input[name="x"]').clear().type("3");
     cy.get('input[name="y"]').clear().type("2");
-    cy.get('select[name="orientation"]').select(RobotOrientation.N);
+    cy.get('select[name="orientation"]').select("N");
     cy.get('input[name="command"]').clear().type("FRRFLLFFRRFLL");
     cy.get('button[type="submit"]').click();
 
@@ -31,7 +29,7 @@ describe("E2E", () => {
 
     cy.get('input[name="x"]').clear().type("0");
     cy.get('input[name="y"]').clear().type("3");
-    cy.get('select[name="orientation"]').select(RobotOrientation.W);
+    cy.get('select[name="orientation"]').select("W");
     cy.get('input[name="command"]').clear().type("LLFFFLFLFL");
     cy.get('button[type="submit"]').click();
 
