@@ -1,5 +1,7 @@
 # Daphne Challenge
 
+Live demo available here: https://daphne-challenge.vercel.app/
+
 > Important: Make sure you have a .env configured
 
 ```bash
