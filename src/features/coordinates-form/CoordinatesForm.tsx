@@ -1,9 +1,60 @@
-import { RobotOrientation } from "~/types";
+import { computePath } from "~/lib/compute";
+import { genRobotId } from "~/lib/utils";
+import { useAppStore } from "~/store/app.store";
+import { RobotInstruction, RobotOrientation, Status } from "~/types";
+
+interface FormData {
+  x: string;
+  y: string;
+  orientation: RobotOrientation;
+  command: string;
+}
 
 export const CoordinatesForm = () => {
+  const scentCoordinates = useAppStore((state) => state.scentCoordinates);
+  const registerNewRobot = useAppStore((state) => state.registerNewRobot);
+  const registerScent = useAppStore((state) => state.registerScent);
+
+  function handleOnSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = Object.fromEntries(formData.entries()) as unknown as FormData;
+    const initialCoordinates = {
+      x: +data.x,
+      y: +data.y,
+      orientation: data.orientation,
+    };
+    const robotPath = computePath(
+      initialCoordinates,
+      data.command.split("") as RobotInstruction[],
+      scentCoordinates
+    );
+    const robotId = genRobotId();
+    if (robotPath.coordinates.status === Status.LOST) {
+      registerScent({
+        robotId,
+        x: robotPath.coordinates.x,
+        y: robotPath.coordinates.y,
+        orientation: robotPath.coordinates.orientation,
+      });
+    }
+
+    registerNewRobot({
+      robotId,
+      initialCoordinates,
+      instructions: data.command.split("") as RobotInstruction[],
+      coordinatesHistory: robotPath.history,
+      // keep last OR or LOST coordinate but not IGNORED
+      finalCoordinates: robotPath.history
+        .filter((c) => c.status !== Status.IGNORED)
+        .slice(-1)[0],
+    });
+  }
+
   return (
     <div>
-      <form className="block max-w-md space-y-6">
+      <form className="block max-w-md space-y-6" onSubmit={handleOnSubmit}>
         <div>
           <h2 className="mb-4">Initial Coordinates</h2>
           <div className="flex w-full max-w-sm gap-10">
